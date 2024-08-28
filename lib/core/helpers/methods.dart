@@ -31,16 +31,6 @@ void showMessage({
   );
 }
 
-void navigateTo({required Widget toPage, bool dontRemove = true}) {
-  Navigator.pushAndRemoveUntil(
-    navigatorKey.currentContext!,
-    MaterialPageRoute(
-      builder: (context) => toPage,
-    ),
-    (route) => dontRemove,
-  );
-}
-
 
 SizedBox verticalSpace(double height) =>
  SizedBox(

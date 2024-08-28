@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:modern_movies/core/helpers/methods.dart';
 import 'package:modern_movies/views/widgets/app_image.dart';
 
 import '../../features/data/movies_model.dart';
@@ -96,11 +97,14 @@ class _CustomListViewItemState extends State<CustomListViewItem> {
                             Icons.star,
                             color: Colors.orange,
                           ),
-                          SizedBox(
-                            width: 5.w,
-                          ),
+                          horizontalSpace(5),
                           Text(
                             widget.model.voteAverage.toString(),
+                          ),
+                          horizontalSpace(5),
+                          Text(
+                            "(${widget.model.voteCount})",
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],
                       )

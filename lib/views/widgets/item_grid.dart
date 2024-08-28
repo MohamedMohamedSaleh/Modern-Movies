@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:modern_movies/views/widgets/app_image.dart';
 
+import '../../core/helpers/methods.dart';
 import '../../features/data/movies_model.dart';
 
 class CustomGridView extends StatefulWidget {
@@ -73,9 +74,7 @@ class _CustomGridViewState extends State<CustomGridView> {
                 ),
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            verticalSpace(10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
@@ -86,9 +85,7 @@ class _CustomGridViewState extends State<CustomGridView> {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            const SizedBox(
-              height: 8,
-            ),
+            verticalSpace(10),
             Padding(
               padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
               child: Text(
@@ -109,11 +106,14 @@ class _CustomGridViewState extends State<CustomGridView> {
                   Icons.star,
                   color: Colors.orange,
                 ),
-                const SizedBox(
-                  width: 5,
-                ),
+                horizontalSpace(5),
                 Text(
                   widget.model.voteAverage.toString(),
+                ),
+                horizontalSpace(5),
+                Text(
+                  "(${widget.model.voteCount})",
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
             ),

@@ -26,6 +26,8 @@ class MyApp extends StatelessWidget {
         navigatorKey: navigatorKey,
         title: 'Modern Movies',
         theme: MyTheme.lightTheme,
+        darkTheme: MyTheme.darkTheme,
+        themeMode: ThemeMode.system,
         home: child,
       ),
       child: const HomePage(),

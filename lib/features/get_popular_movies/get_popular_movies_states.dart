@@ -13,3 +13,10 @@ class GetPopularMoviesFailure extends GetPopularMoviesStates {
 
   GetPopularMoviesFailure({required this.message});
 }
+
+// from Pagination
+
+final class FromPaginationGetPopularMoviesLoading extends GetPopularMoviesStates {}
+final class FromPaginationGetPopularMoviesFailure extends GetPopularMoviesStates {
+  final String message = "there are no more movies";
+}
