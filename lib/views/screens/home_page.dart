@@ -80,11 +80,9 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('Modern Movies'),
         actions: [
-          InkWell(
+          CustomIcon(
             onTap: () {},
-            child: const CustomIcon(
-              icon: Icon(Icons.search),
-            ),
+            icon: const Icon(Icons.search),
           ),
           horizontalSpace(16),
         ],
@@ -186,18 +184,16 @@ class _HomePageState extends State<HomePage> {
                         ),
                         const Spacer(),
                         horizontalSpace(16),
-                        InkWell(
-                            radius: 10,
-                            // splashFactory: InkSplash.splashFactory,
-                            onTap: () {
-                              setState1(() {
-                                isGrid = !isGrid;
-                              });
-                            },
-                            child: CustomIcon(
-                                icon: isGrid
-                                    ? const Icon(Icons.list_rounded)
-                                    : const Icon(Icons.grid_view_outlined))),
+                        CustomIcon(
+                          onTap: () {
+                            setState1(() {
+                              isGrid = !isGrid;
+                            });
+                          },
+                          icon: isGrid
+                              ? const Icon(Icons.list_rounded)
+                              : const Icon(Icons.grid_view_outlined),
+                        ),
                         horizontalSpace(16),
                       ],
                     ),

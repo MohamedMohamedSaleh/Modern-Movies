@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:modern_movies/core/helpers/extentions.dart';
+import 'package:modern_movies/views/screens/movie_details.dart';
 import 'package:modern_movies/views/widgets/app_image.dart';
 
 import '../../core/helpers/methods.dart';
@@ -40,7 +42,9 @@ class _CustomGridViewState extends State<CustomGridView> {
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
     return GestureDetector(
-      onTap: () async {},
+      onTap: () async {
+        context.push(const MovieDetailsView());
+      },
       child: AnimatedContainer(
         duration: Duration(
             milliseconds: widget.index <= 5 ? 400 + (widget.index * 250) : 300),

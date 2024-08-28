@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:modern_movies/core/helpers/extentions.dart';
 import 'package:modern_movies/core/helpers/methods.dart';
 import 'package:modern_movies/views/widgets/app_image.dart';
 
 import '../../features/data/movies_model.dart';
+import '../screens/movie_details.dart';
 
 class CustomListViewItem extends StatefulWidget {
   final MovieModel model;
@@ -32,7 +34,9 @@ class _CustomListViewItemState extends State<CustomListViewItem> {
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
     return GestureDetector(
-      onTap: () async {},
+      onTap: () async {
+        context.push(const MovieDetailsView());
+      },
       child: AnimatedContainer(
         duration: Duration(
             milliseconds: widget.index <= 5 ? 400 + (widget.index * 250) : 300),
