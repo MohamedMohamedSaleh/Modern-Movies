@@ -5,7 +5,7 @@ import 'package:modern_movies/core/helpers/methods.dart';
 import 'package:modern_movies/views/widgets/app_image.dart';
 
 import '../../features/data/movies_model.dart';
-import '../screens/movie_details.dart';
+import '../screens/movies_details/movie_details_views.dart';
 
 class CustomListViewItem extends StatefulWidget {
   final MovieModel model;
@@ -35,7 +35,10 @@ class _CustomListViewItemState extends State<CustomListViewItem> {
     width = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () async {
-        context.push(const MovieDetailsView());
+        context.push( MovieDetailsView(
+          id: widget.model.id,
+          image: widget.model.posterPath,
+        ));
       },
       child: AnimatedContainer(
         duration: Duration(
