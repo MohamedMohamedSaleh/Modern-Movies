@@ -36,6 +36,7 @@ dependencies:
   cached_network_image: ^3.4.0
   kiwi: ^5.0.0
   flutter_bloc: ^8.1.6
+  youtube_player_flutter: ^9.0.3
 
 dev_dependencies:
 

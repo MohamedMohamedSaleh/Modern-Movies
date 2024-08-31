@@ -1,23 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modern_movies/features/data/show_movie_data.dart';
+import 'package:modern_movies/features/show_videos/show_videos_cubit.dart';
 import 'package:modern_movies/views/screens/movies_details/models/images_view_model.dart';
 import 'package:modern_movies/views/screens/movies_details/models/vote_count_model.dart';
 import 'package:modern_movies/views/screens/movies_details/widgets/custom_images_view_widget.dart';
 import 'package:modern_movies/views/widgets/app_image.dart';
 
 import '../../../../core/helpers/methods.dart';
-import 'custom_trailer_view_widget.dart';
+import 'custom_video_view_widget.dart';
 import 'custom_vote_count_widget.dart';
 
-class CustomDetailsWidget extends StatelessWidget {
+class CustomDetailsWidget extends StatefulWidget {
   final ShowMovieData movieModel;
+  final ShowVideosCubit videosCubit;
 
   const CustomDetailsWidget({
     super.key,
     required this.movieModel,
+    required this.videosCubit,
   });
 
+  @override
+  State<CustomDetailsWidget> createState() => _CustomDetailsWidgetState();
+}
+
+class _CustomDetailsWidgetState extends State<CustomDetailsWidget> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -26,17 +35,17 @@ class CustomDetailsWidget extends StatelessWidget {
         children: [
           CustomImagesViewWidget(
             model: MovieImagesModel(
-                backdropPath: movieModel.backdropPath,
-                image: movieModel.posterPath,
-                date: movieModel.releaseDate,
-                status: movieModel.status,
-                title: movieModel.title),
+                backdropPath: widget.movieModel.backdropPath,
+                image: widget.movieModel.posterPath,
+                date: widget.movieModel.releaseDate,
+                status: widget.movieModel.status,
+                title: widget.movieModel.title),
           ),
           CustomVoteCountWidget(
             model: VoteCountModel(
-                popularity: movieModel.popularity,
-                voteCount: movieModel.voteCount,
-                rate: movieModel.voteAverage),
+                popularity: widget.movieModel.popularity,
+                voteCount: widget.movieModel.voteCount,
+                rate: widget.movieModel.voteAverage),
           ),
           verticalSpace(10),
           Padding(
@@ -60,7 +69,7 @@ class CustomDetailsWidget extends StatelessWidget {
                   Align(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      movieModel.overview,
+                      widget.movieModel.overview,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -80,7 +89,7 @@ class CustomDetailsWidget extends StatelessWidget {
                         direction: Axis.horizontal,
                         children: [
                           ...List.generate(
-                            movieModel.genres.length,
+                            widget.movieModel.genres.length,
                             (index) => Padding(
                               padding:
                                   const EdgeInsets.symmetric(vertical: 8.0),
@@ -98,7 +107,7 @@ class CustomDetailsWidget extends StatelessWidget {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        movieModel.genres[index].name,
+                                        widget.movieModel.genres[index].name,
                                       ),
                                       horizontalSpace(5),
                                       Icon(
@@ -129,15 +138,15 @@ class CustomDetailsWidget extends StatelessWidget {
                         // crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           ...List.generate(
-                            movieModel.productionCompanies.length,
+                            widget.movieModel.productionCompanies.length,
                             (index) => Padding(
                               padding:
                                   const EdgeInsets.symmetric(vertical: 8.0),
-                              child: movieModel.productionCompanies[index]
+                              child: widget.movieModel.productionCompanies[index]
                                           .logoPath?.isNotEmpty ??
                                       false
                                   ? AppImage(
-                                      movieModel
+                                      widget.movieModel
                                           .productionCompanies[index].logoPath!,
                                       height: 60.h,
                                       width: 120.w,
@@ -154,7 +163,7 @@ class CustomDetailsWidget extends StatelessWidget {
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 16.0, vertical: 10),
                                         child: Text(
-                                          movieModel
+                                          widget.movieModel
                                               .productionCompanies[index].name,
                                           style: const TextStyle(
                                               fontSize: 18,
@@ -173,18 +182,66 @@ class CustomDetailsWidget extends StatelessWidget {
             ),
           ),
           verticalSpace(30),
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0),
-            child: Text(
-              'Movie trailer',
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyLarge!
-                  .copyWith(fontWeight: FontWeight.bold, fontSize: 20),
-            ),
-          ),
-          verticalSpace(16),
-          const CustomVideoViewWidget(),
+          BlocBuilder(
+            bloc: widget.videosCubit,
+            builder: (context, state) {
+            if (state is ShowVideosLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (widget.videosCubit.trailererVideos.isNotEmpty)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16.0),
+                          child: Text(
+                            'Movie Trailers',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge!
+                                .copyWith(
+                                    fontWeight: FontWeight.bold, fontSize: 20),
+                          ),
+                        ),
+                        verticalSpace(16),
+                        CustomVideoViewWidget(
+                          videoImage: widget.movieModel.backdropPath,
+                          cubit: widget.videosCubit,
+                        ),
+                        verticalSpace(16),
+                      ],
+                    ),
+                  if (widget.videosCubit.featuretteVideos.isNotEmpty)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16.0),
+                          child: Text(
+                            'Movie Featurettes',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge!
+                                .copyWith(
+                                    fontWeight: FontWeight.bold, fontSize: 20),
+                          ),
+                        ),
+                        verticalSpace(16),
+                        CustomVideoViewWidget(
+                          isTrailer: false,
+                          videoImage: widget.movieModel.backdropPath,
+                          cubit: widget.videosCubit,
+                        ),
+                        verticalSpace(16),
+                      ],
+                    ),
+                ]);
+          })
         ],
       ),
     );

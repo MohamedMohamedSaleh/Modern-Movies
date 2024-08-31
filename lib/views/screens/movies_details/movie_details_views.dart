@@ -79,6 +79,7 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
                       )
                     : state is GetMovieSuccess
                         ? CustomDetailsWidget(
+                          videosCubit: showVideosCubit,
                             movieModel: state.movieData,
                           )
                         : Center(
