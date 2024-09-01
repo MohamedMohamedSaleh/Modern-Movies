@@ -26,7 +26,6 @@ class ShowVideosCubit extends Cubit<ShowVideosState> {
           featuretteVideos.add(element);
         }
       }
-      print("${trailererVideos.length}, ${featuretteVideos.length}");
       emit(ShowVideosSuccess());
     } else {
       emit(ShowVideosFailure(message: response.message));

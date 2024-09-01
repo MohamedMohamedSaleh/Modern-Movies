@@ -1,16 +1,14 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:modern_movies/core/helpers/extentions.dart';
 import 'package:modern_movies/core/helpers/methods.dart';
 import 'package:modern_movies/features/show_videos/show_videos_cubit.dart';
 import 'package:modern_movies/views/screens/movies_details/widgets/custom_show_video.dart';
 import 'package:modern_movies/views/widgets/app_image.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
-class CustomVideoViewWidget extends StatefulWidget {
-  const CustomVideoViewWidget(
+class CustomVideoTrailerWidget extends StatefulWidget {
+  const CustomVideoTrailerWidget(
       {super.key,
       required this.cubit,
       this.isTrailer = true,
@@ -20,10 +18,11 @@ class CustomVideoViewWidget extends StatefulWidget {
   final String videoImage;
 
   @override
-  State<CustomVideoViewWidget> createState() => _CustomVideoViewWidgetState();
+  State<CustomVideoTrailerWidget> createState() =>
+      _CustomVideoTrailerWidgetState();
 }
 
-class _CustomVideoViewWidgetState extends State<CustomVideoViewWidget> {
+class _CustomVideoTrailerWidgetState extends State<CustomVideoTrailerWidget> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder(
@@ -44,8 +43,8 @@ class _CustomVideoViewWidgetState extends State<CustomVideoViewWidget> {
               padding: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 20.h),
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) => CustomImageVideoWidget(
+                isTrailer: true,
                     index: index,
-                    isTrailer: widget.isTrailer,
                     cubit: widget.cubit,
                     videoImage: widget.videoImage,
                   ),
@@ -59,33 +58,72 @@ class _CustomVideoViewWidgetState extends State<CustomVideoViewWidget> {
   }
 }
 
+class CustomFeaturetteVideo extends StatefulWidget {
+  const CustomFeaturetteVideo(
+      {super.key, required this.cubit, required this.videoImage});
+  final ShowVideosCubit cubit;
+  final String videoImage;
+
+  @override
+  State<CustomFeaturetteVideo> createState() => _CustomFeaturetteVideoState();
+}
+
+class _CustomFeaturetteVideoState extends State<CustomFeaturetteVideo> {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder(
+      bloc: widget.cubit,
+      builder: (context, state) {
+        if (state is ShowVideosLoading) {
+          return SizedBox(
+            height: 200.h,
+            child: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+        return SizedBox(
+          height: 210.h,
+          child: ListView.separated(
+              shrinkWrap: true,
+              padding: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 20.h),
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) => CustomImageVideoWidget(
+                isTrailer:  false,
+                    index: index,
+                    cubit: widget.cubit,
+                    videoImage: widget.videoImage,
+                  ),
+              separatorBuilder: (context, index) => horizontalSpace(20),
+              itemCount: widget.cubit.featuretteVideos.length),
+        );
+      },
+    );
+  }
+}
+
 class CustomImageVideoWidget extends StatelessWidget {
   const CustomImageVideoWidget(
       {super.key,
       required this.videoImage,
       required this.cubit,
-      this.isTrailer = true,
-      required this.index});
+      required this.index, required this.isTrailer});
+final bool isTrailer;
   final String videoImage;
-  final bool isTrailer;
   final ShowVideosCubit cubit;
   final int index;
 
   @override
   Widget build(BuildContext context) {
+
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => CustomShowVideo(
-                title: isTrailer
-                    ? cubit.trailererVideos[index].name
-                    : cubit.featuretteVideos[index].name,
-                videoKey: isTrailer
-                    ? cubit.trailererVideos[index].key
-                    : cubit.featuretteVideos[index].key),
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => CustomShowVideo(
+            title:isTrailer? cubit.trailererVideos[index].name: cubit.featuretteVideos[index].name,
+            videoKey:isTrailer? cubit.trailererVideos[index].key : cubit.featuretteVideos[index].key,
           ),
-        );
+        ));
       },
       child: Container(
         height: 200.h,
@@ -99,7 +137,9 @@ class CustomImageVideoWidget extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(15),
               child: AppImage(
-                videoImage,
+                errorImage: videoImage,
+                YoutubePlayer.getThumbnail(
+                    videoId:isTrailer? cubit.trailererVideos[index].key: cubit.featuretteVideos[index].key),
                 height: 200.h,
                 width: MediaQuery.of(context).size.width - 36,
                 fit: BoxFit.cover,
@@ -135,9 +175,7 @@ class CustomImageVideoWidget extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10.0, vertical: 5),
                         child: Text(
-                          isTrailer
-                              ? cubit.trailererVideos[index].name
-                              : cubit.featuretteVideos[index].name,
+                         isTrailer? cubit.trailererVideos[index].name : cubit.featuretteVideos[index].name,
                           style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.w500),
                           maxLines: 2,

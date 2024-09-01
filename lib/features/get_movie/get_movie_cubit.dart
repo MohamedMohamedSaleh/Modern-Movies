@@ -16,7 +16,6 @@ class GetMovieCubit extends Cubit<GetMovieState> {
         await DioHelper.getData(endPoint: "${EndPoint.getMovie}$id",);
     if (response.isSuccess) {
       final movieData = ShowMovieData.fromJson(response.response!.data);
-      print(movieData.genres);
       emit(GetMovieSuccess(movieData: movieData));
     } else {
       emit(GetMovieFailure(message: response.message));

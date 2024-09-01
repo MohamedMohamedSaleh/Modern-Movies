@@ -25,6 +25,8 @@ class _CustomShowVideoState extends State<CustomShowVideo> {
         autoPlay: true,
       ),
     );
+ 
+    setState(() {});
     super.initState();
   }
 
@@ -37,10 +39,10 @@ class _CustomShowVideoState extends State<CustomShowVideo> {
 
   @override
   void dispose() {
-    print("dispose");
     _controller.dispose();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -48,35 +50,44 @@ class _CustomShowVideoState extends State<CustomShowVideo> {
       canPop: false,
       onPopInvoked: (didPop) {
         if (!didPop) {
-          SystemChrome.setPreferredOrientations(DeviceOrientation.values);
-          _controller.pause();
-          Navigator.of(context).pop();
+          // YoutubePlayer.getThumbnail(videoId: videoId)
+          final orientation = MediaQuery.of(context).orientation;
+          if (orientation == Orientation.portrait) {
+            Navigator.of(context).pop();
+          } else {
+            _controller.toggleFullScreenMode();
+            SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+                overlays: SystemUiOverlay.values);
+            SystemChrome.setPreferredOrientations(DeviceOrientation.values);
+          }
         }
       },
       child: Scaffold(
-        body: ListView(
-          // mainAxisAlignment: MainAxisAlignment.center,
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            YoutubePlayer(
-              controller: _controller,
-              showVideoProgressIndicator: true,
-              progressColors: const ProgressBarColors(
-                playedColor: Colors.red, // Color of the played portion
-                handleColor: Colors.redAccent, // Color of the handle
-                bufferedColor: Colors.white, // Color of the buffered portion
-                backgroundColor:
-                    Colors.grey, // Background color of the progress bar
+            Flexible(
+              child: YoutubePlayer(
+                controller: _controller,
+                showVideoProgressIndicator: true,
+                progressColors: const ProgressBarColors(
+                  playedColor: Colors.red, // Color of the played portion
+                  handleColor: Colors.redAccent, // Color of the handle
+                  bufferedColor: Colors.white, // Color of the buffered portion
+                  backgroundColor:
+                      Colors.grey, // Background color of the progress bar
+                ),
+                // progressIndicatorColor: Colors.blueAccent,
               ),
-              // progressIndicatorColor: Colors.blueAccent,
             ),
             verticalSpace(16),
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            //   child: Text(
-            //     widget.title,
-            //     style: Theme.of(context).textTheme.titleLarge,
-            //   ),
-            // ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Text(
+                widget.title,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+            ),
           ],
         ),
       ),

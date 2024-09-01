@@ -142,8 +142,11 @@ class _CustomDetailsWidgetState extends State<CustomDetailsWidget> {
                             (index) => Padding(
                               padding:
                                   const EdgeInsets.symmetric(vertical: 8.0),
-                              child: widget.movieModel.productionCompanies[index]
-                                          .logoPath?.isNotEmpty ??
+                              child: widget
+                                          .movieModel
+                                          .productionCompanies[index]
+                                          .logoPath
+                                          ?.isNotEmpty ??
                                       false
                                   ? AppImage(
                                       widget.movieModel
@@ -183,65 +186,66 @@ class _CustomDetailsWidgetState extends State<CustomDetailsWidget> {
           ),
           verticalSpace(30),
           BlocBuilder(
-            bloc: widget.videosCubit,
-            builder: (context, state) {
-            if (state is ShowVideosLoading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (widget.videosCubit.trailererVideos.isNotEmpty)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16.0),
-                          child: Text(
-                            'Movie Trailers',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge!
-                                .copyWith(
-                                    fontWeight: FontWeight.bold, fontSize: 20),
-                          ),
+              bloc: widget.videosCubit,
+              builder: (context, state) {
+                if (state is ShowVideosLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (widget.videosCubit.trailererVideos.isNotEmpty)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 16.0),
+                              child: Text(
+                                'Movie Trailers',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20),
+                              ),
+                            ),
+                            verticalSpace(16),
+                            CustomVideoTrailerWidget(
+                              videoImage: widget.movieModel.backdropPath,
+                              cubit: widget.videosCubit,
+                            ),
+                            verticalSpace(16),
+                          ],
                         ),
-                        verticalSpace(16),
-                        CustomVideoViewWidget(
-                          videoImage: widget.movieModel.backdropPath,
-                          cubit: widget.videosCubit,
+                      if (widget.videosCubit.featuretteVideos.isNotEmpty)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 16.0),
+                              child: Text(
+                                'Movie Featurettes',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20),
+                              ),
+                            ),
+                            verticalSpace(16),
+                            CustomFeaturetteVideo(
+                              videoImage: widget.movieModel.backdropPath,
+                              cubit: widget.videosCubit,
+                            ),
+                            verticalSpace(16),
+                          ],
                         ),
-                        verticalSpace(16),
-                      ],
-                    ),
-                  if (widget.videosCubit.featuretteVideos.isNotEmpty)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16.0),
-                          child: Text(
-                            'Movie Featurettes',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge!
-                                .copyWith(
-                                    fontWeight: FontWeight.bold, fontSize: 20),
-                          ),
-                        ),
-                        verticalSpace(16),
-                        CustomVideoViewWidget(
-                          isTrailer: false,
-                          videoImage: widget.movieModel.backdropPath,
-                          cubit: widget.videosCubit,
-                        ),
-                        verticalSpace(16),
-                      ],
-                    ),
-                ]);
-          })
+                    ]);
+              })
         ],
       ),
     );

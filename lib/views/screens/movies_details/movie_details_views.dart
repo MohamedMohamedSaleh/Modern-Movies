@@ -37,7 +37,7 @@ class _MovieDetailsViewState extends State<MovieDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.id);
+  debugPrint(widget.id.toString());
     return DefaultTabController(
       length: 2,
       child: Scaffold(

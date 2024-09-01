@@ -11,15 +11,17 @@ class AppImage extends StatelessWidget {
     this.width,
     this.fit = BoxFit.scaleDown,
     this.color,
+    this.errorImage,
   });
   final String path;
   final double? height, width;
   final BoxFit fit;
   final Color? color;
+  final String? errorImage;
 
   @override
   Widget build(BuildContext context) {
-   if (path.startsWith('http')) {
+    if (path.startsWith('http')) {
       return CachedNetworkImage(
         imageUrl: path,
         placeholder: (context, url) => FittedBox(
@@ -32,24 +34,29 @@ class AppImage extends StatelessWidget {
             ),
           ),
         ),
-        errorWidget: (context, url, error) => Icon(
-                    Icons.error,
-                    size: 50,
-                    color: Colors.red[700],
-                  ),
+        errorWidget: (context, url, error) {
+          if (error.toString().contains('404')) {
+            return CachedNetworkImage(
+              height: height?.h,
+              width: width?.w,
+              fit: fit,
+              imageUrl: errorImage ??
+                  'https://thumbs.dreamstime.com/b/word-video-white-plastic-letters-black-notice-board-bulletin-141316285.jpg',
+            );
+          }
+          return Icon(
+            Icons.error,
+            size: 50,
+            color: Colors.red[700],
+          );
+        },
         height: height?.h,
         width: width?.w,
         fit: fit,
         color: color,
       );
-
-      /*  return Image.network(
-        path,
-        height: height?.h,
-        width: width?.w,
-        fit: fit,
-        color: color,
-      ); */
+//https://img.favpng.com/2/24/17/youtube-social-media-computer-icons-video-logo-png-favpng-vRZJzfnQu6ryhdSCJ0PvnkkC7.jpg
+//https://thumbs.dreamstime.com/b/word-video-white-plastic-letters-black-notice-board-bulletin-141316285.jpg
     } else {
       return Image.asset(
         path,
